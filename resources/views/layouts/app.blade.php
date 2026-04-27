@@ -58,41 +58,17 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
             text-decoration: none;
+            height: 100%;
+            /* Para que ocupe el alto de la cabecera */
         }
 
-        .logo-icon {
-            width: 38px;
-            height: 38px;
-            background: var(--granate);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1;
-        }
-
-        .logo-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            color: var(--crema);
-            letter-spacing: .01em;
-        }
-
-        .logo-sub {
-            font-size: .68rem;
-            color: #888;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            margin-top: 2px;
+        .logo-img {
+            height: 120px;
+            /* Ajusta según el diseño de tu logo */
+            width: auto;
+            display: block;
+            object-fit: contain;
         }
 
         .header-badge {
@@ -141,17 +117,6 @@
             box-shadow: var(--sombra-h);
         }
 
-        .btn-outline {
-            background: transparent;
-            color: var(--granate);
-            border: 1.5px solid var(--granate);
-        }
-
-        .btn-outline:hover {
-            background: var(--granate);
-            color: #fff;
-        }
-
         /* ── UTILIDADES ── */
         .tag {
             display: inline-block;
@@ -162,22 +127,6 @@
             padding: 3px 10px;
             border-radius: 99px;
         }
-
-        .tag-granate {
-            background: #fce8e8;
-            color: var(--granate);
-        }
-
-        .tag-oro {
-            background: #fdf3da;
-            color: #8a6a00;
-        }
-
-        @media (max-width: 600px) {
-            .logo-sub {
-                display: none;
-            }
-        }
     </style>
     @yield('styles')
 </head>
@@ -186,11 +135,7 @@
 
     <header class="site-header">
         <a href="{{ url('/') }}" class="logo">
-            <div class="logo-icon">☕</div>
-            <div class="logo-text">
-                <span class="logo-name">Cafetería UNI</span>
-                <span class="logo-sub">Universidad · Campus</span>
-            </div>
+            <img src="{{ asset('imgs/VELLAk_blanco.png') }}" alt="Cafetería UNI" class="logo-img">
         </a>
         <span class="header-badge">@yield('header-badge', 'Pedidos online')</span>
     </header>
