@@ -109,6 +109,9 @@
             justify-content: center;
             font-size: 26px;
             transition: background .25s;
+        }
+
+        .card-icon i{
             color: var(--tinta);
         }
 
@@ -220,13 +223,7 @@
 
     <div class="page-intro">
         <h1>¿Qué vas a pedir <span>hoy</span>?</h1>
-        <p>Haz tu pedido online y recógelo sin esperas. Sin colas, sin perder tiempo.</p>
-    </div>
-
-    <div class="info-strip">
-        <div class="info-item"><span>🤖</span><span>Robot de autoservicio disponible</span></div>
-        <div class="info-item"><span>🛺</span><span>AGVs para menús del día</span></div>
-        <div class="info-item"><span>⭐</span><span>Entrega en mesa para zona VIP</span></div>
+        <p>Haz tu pedido online y recógelo sin esperas.</p>
     </div>
 
     <div class="choice-grid">
@@ -234,31 +231,19 @@
         {{-- PEDIDO RÁPIDO --}}
         <a href="{{ url('/order/robot') }}" class="choice-card">
             <span class="card-time">~2 min</span>
-            <div class="card-icon">⚡</div>
+            <div class="card-icon"><i class="fa-solid fa-bolt"></i></div>
             <div class="card-title">Pedido<br>rápido</div>
             <p class="card-desc">Bocadillos, bollería, cafés y bebidas frías. Lo prepara el robot y lo tienes en minutos.
             </p>
-            <ul class="card-items">
-                <li>🥖 Bocadillos</li>
-                <li>☕ Cafés</li>
-                <li>🥐 Bollería</li>
-                <li>🥤 Bebidas</li>
-            </ul>
             <span class="card-cta">Pedir ahora →</span>
         </a>
 
         {{-- MENÚ DEL DÍA --}}
         <a href="{{ url('/order/menu') }}" class="choice-card">
             <span class="card-time">~15 min</span>
-            <div class="card-icon">🍽️</div>
+            <div class="card-icon"><i class="fa-solid fa-drumstick-bite"></i></div>
             <div class="card-title">Menú<br>del día</div>
             <p class="card-desc">Primero, segundo y postre. Cuatro opciones diarias para todos los gustos y necesidades.</p>
-            <ul class="card-items">
-                <li>🍛 Completo</li>
-                <li>🥗 Vegetariano</li>
-                <li>🥙 Medio menú</li>
-                <li>🥦 Saludable</li>
-            </ul>
             <span class="card-cta">Ver menú →</span>
         </a>
 

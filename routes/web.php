@@ -12,3 +12,7 @@ Route::get('/order/{type}',            [OrderController::class, 'order'])->name(
      ->where('type', 'robot|menu');
 Route::post('/checkout',               [OrderController::class, 'checkout'])->name('checkout');
 Route::get('/ticket/{order_number}',   [OrderController::class, 'ticket'])->name('ticket');
+
+
+Route::get('/scanner',              [OrderController::class, 'scanner'])->name('scanner');
+Route::post('/api/scan-order',      [OrderController::class, 'scan']);

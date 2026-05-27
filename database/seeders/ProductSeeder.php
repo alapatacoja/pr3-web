@@ -14,17 +14,17 @@ class ProductSeeder extends Seeder
 {
     $products = [
             // Bocadillos
-            ['name' => 'Bacon Huevo Patatas',         'category' => 'bocata',           'price' => 2.50],
-            ['name' => 'Tortilla de patata',          'category' => 'bocata',           'price' => 3.00],
-            ['name' => 'Vegetal',                     'category' => 'bocata',           'price' => 2.80],
+            ['name' => 'Bacon Huevo Patatas',         'category' => 'bocata',           'price' => 2.80],
+            ['name' => 'Tortilla de patata',          'category' => 'bocata',           'price' => 1.40],
+            ['name' => 'Vegetal',                     'category' => 'bocata',           'price' => 2.20],
             ['name' => 'Frankfurt Patatas',         'category' => 'bocata',           'price' => 1.50],
-            ['name' => 'Lomo Queso',          'category' => 'bocata',           'price' => 3.00],
-            ['name' => 'Atún Huevo Tomate',           'category' => 'bocata',           'price' => 2.80],
+            ['name' => 'Lomo Queso',          'category' => 'bocata',           'price' => 2.50],
+            ['name' => 'Atún Huevo Tomate',           'category' => 'bocata',           'price' => 2.20],
             ['name' => 'Salmon con queso crema y cebolla crujiente',       'category' => 'bocata_especial',  'price' => 3.80],
             ['name' => 'Calamares con mayonesa',        'category' => 'bocata_dia',       'price' => 2.80],
 
             // Bollería
-            ['name' => 'Croissant',             'category' => 'bolleria',         'price' => 1.20],
+            ['name' => 'Croissant',             'category' => 'bolleria',         'price' => '0.90'],
             ['name' => 'Napolitana de Cocholate',            'category' => 'bolleria',         'price' => 1.20],
             ['name' => 'Napolitana Mixta',            'category' => 'bolleria',         'price' => 1.20],
             ['name' => 'Donut',                 'category' => 'bolleria',         'price' => 0.80],
@@ -36,10 +36,10 @@ class ProductSeeder extends Seeder
             ['name' => 'Cappuccino',            'category' => 'cafe',             'price' => 1.80],
 
             // Bebidas frías
-            ['name' => 'Agua',                  'category' => 'bebida',           'price' => 0.80],
+            ['name' => 'Agua',                  'category' => 'bebida',           'price' => 0.60],
             ['name' => 'Refresco',              'category' => 'bebida',           'price' => 1.20],
-            ['name' => 'Zumo de piña',          'category' => 'bebida',           'price' => 2.00],
-            ['name' => 'Zumo de naranja',          'category' => 'bebida',           'price' => 2.00],
+            ['name' => 'Zumo de piña',          'category' => 'bebida',           'price' => 1.50],
+            ['name' => 'Zumo de naranja',          'category' => 'bebida',           'price' => 1.40],
 
             // Menús
             ['name' => 'Menú completo',         'category' => 'menu_completo',    'price' => 5.90],
