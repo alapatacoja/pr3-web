@@ -6,16 +6,16 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
-use PhpMqtt\Client\MqttClient;
-use PhpMqtt\Client\ConnectionSettings;
 
 class OrderController extends Controller
 {
     const ROBOT_CATEGORIES = ['bocata', 'bocata_especial', 'bocata_dia', 'bolleria', 'cafe', 'bebida'];
     const MENU_CATEGORIES  = ['menu_completo', 'menu_medio', 'menu_vegetariano', 'menu_saludable'];
 
-    const MQTT_HOST = '127.0.0.1';  // broker en tu mismo PC
-    const MQTT_PORT = 1883;
+    // Tipos numéricos para FlexSim
+    const TYPE_VIP   = '1';
+    const TYPE_AGV   = '2';
+    const TYPE_ROBOT = '3';
 
     public function index()   { return view('index'); }
     public function scanner() { return view('scanner'); }
@@ -47,9 +47,11 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'El carrito está vacío.');
         }
 
-        $orderType = 'robot';
-        if ($type === 'menu') {
-            $orderType = ($tableNumber && is_numeric($tableNumber)) ? 'vip' : 'agv';
+        // Tipo numérico para FlexSim: 3=robot, 2=agv, 1=vip
+        if ($type === 'robot') {
+            $orderType = self::TYPE_ROBOT;
+        } else {
+            $orderType = ($tableNumber && is_numeric($tableNumber)) ? self::TYPE_VIP : self::TYPE_AGV;
         }
 
         $ids      = array_column($cartData, 'id');
@@ -69,7 +71,7 @@ class OrderController extends Controller
         $order = Order::create([
             'order_number' => $orderNumber,
             'type'         => $orderType,
-            'table_number' => ($orderType === 'vip') ? (int)$tableNumber : null,
+            'table_number' => ($orderType === self::TYPE_VIP) ? (int)$tableNumber : null,
             'status'       => 'pending',
             'total_price'  => $total,
         ]);
@@ -84,18 +86,13 @@ class OrderController extends Controller
             ]);
         }
 
-        // AGV y VIP: publicar ahora (no necesitan QR)
-        if ($orderType !== 'robot') {
-            $this->publishToFlexsim($order, $cartData, $products);
-            $order->status = 'preparing';
-            $order->save();
-        }
-        // Robot: NO publicamos aquí, esperamos al escaneo del QR
+        // AGV (2) y VIP (1): quedan en pending, FlexSim los lee por DB
+        // Robot (3): también pending, espera al escaneo del QR para pasar a preparing
 
         return redirect()->route('ticket', $order->order_number);
     }
 
-    /* ── POST /api/scan-order — llamado desde el scanner QR ── */
+    /* ── POST /api/scan-order ── */
     public function scan(Request $request)
     {
         $order = Order::with('items.product')
@@ -106,7 +103,7 @@ class OrderController extends Controller
             return response()->json(['message' => 'Pedido no encontrado'], 404);
         }
 
-        if ($order->type !== 'robot') {
+        if ($order->type !== self::TYPE_ROBOT) {
             return response()->json(['message' => 'Este pedido no es de robot'], 400);
         }
 
@@ -114,46 +111,9 @@ class OrderController extends Controller
             return response()->json(['message' => 'Pedido ya procesado']);
         }
 
-        // Ahora sí publicamos al robot
-        $cartData = $order->items->map(fn($i) => [
-            'id'  => $i->product_id,
-            'qty' => $i->quantity,
-        ])->toArray();
-
-        $products = $order->items->mapWithKeys(fn($i) => [$i->product_id => $i->product]);
-
-        $this->publishToFlexsim($order, $cartData, $products);
-
         $order->status = 'preparing';
         $order->save();
 
         return response()->json(['message' => 'Pedido enviado al robot']);
-    }
-
-    /* ── MQTT ── */
-    private function publishToFlexsim(Order $order, array $cartData, $products)
-    {
-        $payload = json_encode([
-            'order_number' => $order->order_number,
-            'type'         => $order->type,            // robot | agv | vip
-            'table_number' => $order->table_number,
-            'items'        => array_map(function($item) use ($products) {
-                $p = $products[$item['id']] ?? null;
-                return [
-                    'product'  => $p?->name     ?? '',
-                    'category' => $p?->category ?? '',
-                    'qty'      => $item['qty'],
-                ];
-            }, $cartData),
-        ]);
-
-        try {
-            $mqtt = new MqttClient(self::MQTT_HOST, self::MQTT_PORT, 'laravel-' . uniqid());
-            $mqtt->connect();
-            $mqtt->publish('cafeteria/orders', $payload, 0);
-            $mqtt->disconnect();
-        } catch (\Exception $e) {
-            \Log::error('MQTT error: ' . $e->getMessage());
-        }
     }
 }
