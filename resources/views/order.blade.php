@@ -646,16 +646,26 @@ function closeDrawer() {
 }
 
 /* ── ROBOT ── */
+/* ── ROBOT: máximo 1 producto en total ── */
 function addToCart(id, name, price) {
+    // Si ya hay algo en el carrito, no añadir más
+    if (Object.keys(cart).length > 0 && !cart[id]) {
+        alert('Solo puedes pedir un producto a la vez.');
+        return;
+    }
     if (!cart[id]) cart[id] = { name, price, qty: 0 };
-    cart[id].qty++;
+    // Máximo qty 1
+    if (cart[id].qty >= 1) return;
+    cart[id].qty = 1;
     updateQtyDisplay(id);
     renderCart();
 }
 
 function changeQty(id, delta) {
     if (!cart[id]) return;
-    cart[id].qty = Math.max(0, cart[id].qty + delta);
+    const newQty = cart[id].qty + delta;
+    if (newQty > 1) return; // no dejar subir de 1
+    cart[id].qty = Math.max(0, newQty);
     if (cart[id].qty === 0) delete cart[id];
     updateQtyDisplay(id);
     renderCart();
@@ -729,6 +739,23 @@ function renderCart() {
             document.getElementById('cart-input-' + zone).value = cartJSON;
         }
     });
+
+    // Bloquear botones + si ya hay un producto
+document.querySelectorAll('.counter-btn').forEach(btn => {
+    if (btn.querySelector('.fa-plus')) {
+        const hasItem = Object.keys(cart).length > 0;
+        btn.style.opacity = hasItem ? '0.3' : '1';
+        btn.style.pointerEvents = hasItem ? 'none' : 'auto';
+    }
+});
+// Desbloquear el + del producto que ya está en el carrito
+Object.keys(cart).forEach(id => {
+    const card = document.getElementById('qty-' + id)?.closest('.product-card');
+    if (card) {
+        const plusBtn = card.querySelector('.fa-plus')?.parentElement;
+        if (plusBtn) { plusBtn.style.opacity = '0.3'; plusBtn.style.pointerEvents = 'none'; }
+    }
+});
 }
 
 function removeItem(id) {
